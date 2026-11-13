@@ -1,0 +1,53 @@
+---
+title: "Authentication"
+description: "Create API keys and use OAuth 2.0 access tokens to call the ProtosPay Payments API."
+keywords: ["authentication", "oauth", "client credentials", "api key", "access token", "bearer"]
+---
+
+The ProtosPay Payments API uses OAuth 2.0 with the client credentials grant. You exchange an API key's client ID and client secret for an access token, then send that token with every request.
+
+## Create an API key
+
+An API key is a client ID and client secret pair.
+
+1. Sign in to the dashboard: [app-sand.protospay.com](https://app-sand.protospay.com) for the sandbox, or [app.protospay.com](https://app.protospay.com) for production.
+2. Open **API keys** and create a key.
+3. Give it a name that says where it is used, such as "Checkout server", and choose the **Payment API** scope.
+4. Copy the client ID and client secret.
+
+<Warning>
+  The full client secret is shown only once, when you create the key. Afterwards the dashboard shows it masked. Store it in a secrets manager, and never put it in browser or mobile app code.
+</Warning>
+
+Sandbox and production keys are separate. A sandbox key does not work against `https://api.protospay.com`.
+
+## Get an access token
+
+Call [Create an access token](/api-reference/auth/create-an-access-token) with your client ID and client secret. This is the only endpoint that needs no `Authorization` header. The body is JSON:
+
+```bash
+curl -X POST "https://api-sandbox.protospay.com/auth/token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "grantType": "client_credentials",
+    "clientId": "'"$PROTOSPAY_CLIENT_ID"'",
+    "clientSecret": "'"$PROTOSPAY_CLIENT_SECRET"'"
+  }'
+```
+
+A `200 OK` response returns `access_token`, `token_type`, `expires_in` and `scope`. `expires_in` is the token's lifetime in seconds. Reuse the token until it expires instead of requesting a new one for every call. A wrong client ID or secret returns `401 Unauthorized`.
+
+## Call the API
+
+Send the access token in the `Authorization` header:
+
+```bash
+curl "https://api-sandbox.protospay.com/payments/$PAYMENT_ID" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+A missing, invalid or expired token returns `401 Unauthorized`. Request a new token and retry.
+
+## Try requests from these docs
+
+Every page in the API reference has a playground. Paste an access token in the **Authorization** field and pick the sandbox server to send real requests.

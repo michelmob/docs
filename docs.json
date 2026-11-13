@@ -1,0 +1,97 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "ProtosPay",
+  "colors": {
+    "primary": "#0E8C5A",
+    "light": "#1ED792",
+    "dark": "#0E8C5A"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "pages": [
+      {
+        "group": "Getting started",
+        "pages": [
+          "index",
+          "quickstart",
+          "authentication",
+          "errors"
+        ]
+      },
+      {
+        "group": "Guides",
+        "pages": [
+          "guides/pix-payments",
+          "guides/payouts"
+        ]
+      },
+      {
+        "group": "API reference",
+        "pages": [
+          "api-reference/auth/create-an-access-token",
+          "api-reference/checkouts/create-a-checkout",
+          "api-reference/payments/create-a-payment",
+          "api-reference/payments/get-a-payment",
+          "api-reference/payouts/create-a-payout",
+          "api-reference/payouts/get-a-payout"
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://www.protospay.com"
+  },
+  "navbar": {
+    "links": [
+      {
+        "href": "https://www.protospay.com",
+        "label": "Website"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.protospay.com"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "description": "Developer documentation for the ProtosPay Payments API: checkouts, Pix payments and payouts.",
+  "api": {
+    "openapi": "openapi.json",
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "defaults": "required",
+      "languages": [
+        "bash",
+        "javascript",
+        "python",
+        "csharp"
+      ]
+    }
+  },
+  "appearance": {
+    "default": "dark"
+  },
+  "background": {
+    "color": {
+      "light": "#F8FBFA",
+      "dark": "#080A0A"
+    }
+  }
+}

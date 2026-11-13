@@ -1,0 +1,60 @@
+---
+title: "Pix payments"
+description: "Collect Pix payments with a checkout or a payment, show the QR code, and confirm the customer paid."
+keywords: ["pix", "qr code", "br code", "checkout", "payment"]
+---
+
+You can collect money from a customer in two ways.
+
+| | Checkout | Payment |
+| --- | --- | --- |
+| Endpoint | [Create a checkout](/api-reference/checkouts/create-a-checkout) | [Create a payment](/api-reference/payments/create-a-payment) |
+| Payment method | Not chosen yet. The response lists the `paymentMethods` available for the order. | Chosen by you in `paymentMethod`. |
+| Use it when | You want to see which payment methods the customer can use before charging. | You already know how the customer pays, for example with Pix. |
+| Extra fields | `metadata`: your own key-value pairs, returned in the response. | `pix`: the QR code to show the customer. |
+
+Both take the same order data: your `orderId`, the `amount` and `currency`, a `description`, the `customer`, and optional line `items`.
+
+## Create a Pix payment
+
+```bash
+curl -X POST "https://api-sandbox.protospay.com/payments" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "orderId": "order_1001",
+    "amount": 150.00,
+    "currency": "BRL",
+    "paymentMethod": "pix",
+    "customer": {
+      "name": "Maria Silva",
+      "document": "12345678909",
+      "email": "maria.silva@example.com"
+    },
+    "items": [
+      { "sku": "SKU-001", "name": "Monthly subscription", "quantity": 1, "unitPrice": 150.00 }
+    ]
+  }'
+```
+
+`orderId`, `currency`, `paymentMethod` and `customer` are required. Use an `orderId` that identifies the order in your system: the response returns it as `orderExternalId`, next to ProtosPay's own `orderId`.
+
+## Show the QR code
+
+The response's `pix` object holds what the customer needs to pay:
+
+<ResponseField name="pix.qrCodeImageBase64" type="string">
+  The QR code as a Base64-encoded image. Show it on a desktop screen so the customer can scan it with their banking app.
+</ResponseField>
+<ResponseField name="pix.qrCode" type="string">
+  The Pix copy-and-paste code. Show it with a copy button, for customers paying on the same phone.
+</ResponseField>
+<ResponseField name="pix.expiresAt" type="string">
+  When the QR code expires. Show a countdown, and create a new payment if it expires before the customer pays.
+</ResponseField>
+
+## Confirm the payment
+
+Call [Get a payment](/api-reference/payments/get-a-payment) with the payment's `id` to see its current `status`. Once the customer pays, `paidAt` is set. If the payment fails, `failureCode` and `failureReason` say why.
+
+Deliver the order only after you have confirmed the payment from your server.

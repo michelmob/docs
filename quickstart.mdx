@@ -1,0 +1,91 @@
+---
+title: "Quickstart"
+description: "Get an access token and create your first Pix payment in the sandbox."
+keywords:
+  - "quickstart"
+  - "first payment"
+  - "pix"
+  - "sandbox"
+---
+
+This guide takes you from a new API key to a Pix payment in the sandbox.
+
+## Prerequisites
+
+- A ProtosPay sandbox account at [app-sand.protospay.com](https://app-sand.protospay.com).
+- A server-side environment that can make HTTPS requests. Never call the API from a browser or mobile app, because that would expose your client secret.
+
+## Create your first payment
+
+<Steps>
+  <Step title="Create an API key">
+    In the sandbox dashboard, open **API keys** and create a key with the **Payment API** scope. Copy the **client ID** and **client secret**.
+
+    <Warning>
+      The client secret is shown only once, when you create the key. Store it in a secrets manager. If you lose it, create a new key.
+    </Warning>
+  </Step>
+  <Step title="Get an access token">
+    Exchange your client ID and client secret for an access token with the OAuth 2.0 client credentials grant.
+
+    ```bash
+    curl -X POST "https://api-sandbox.protospay.com/auth/token" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "grantType": "client_credentials",
+        "clientId": "'"$PROTOSPAY_CLIENT_ID"'",
+        "clientSecret": "'"$PROTOSPAY_CLIENT_SECRET"'"
+      }'
+    ```
+
+    The response contains an `access_token` and its lifetime in `expires_in` (seconds). See [Authentication](/authentication) for details.
+  </Step>
+  <Step>
+  </Step>
+  <Step title="Create a Pix payment">
+    Send the token in the `Authorization` header and create a payment.
+
+    ```bash
+    curl -X POST "https://api-sandbox.protospay.com/payments" \
+      -H "Authorization: Bearer $ACCESS_TOKEN" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "orderId": "order_1001",
+        "amount": 150.00,
+        "currency": "BRL",
+        "paymentMethod": "pix",
+        "description": "Order #1001",
+        "customer": {
+          "name": "Maria Silva",
+          "document": "12345678909",
+          "email": "maria.silva@example.com"
+        }
+      }'
+    ```
+
+    A `201 Created` response returns the payment, with its `id`, `status` and a `pix` object.
+  </Step>
+  <Step title="Show the QR code to your customer">
+    Display `pix.qrCodeImageBase64` as an image, and offer `pix.qrCode` as a copy-and-paste code. The customer must pay before `pix.expiresAt`.
+  </Step>
+  <Step title="Check the payment">
+    Get the payment by its `id` to see its current `status`. `paidAt` is set once the customer pays.
+
+    ```bash
+    curl "https://api-sandbox.protospay.com/payments/$PAYMENT_ID" \
+      -H "Authorization: Bearer $ACCESS_TOKEN"
+    ```
+  </Step>
+</Steps>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Pix payments" icon="qr-code" href="/guides/pix-payments">
+    Learn when to use a checkout instead of a payment.
+  </Card>
+
+  <Card title="API reference" icon="square-terminal" href="/api-reference/payments/create-a-payment">
+    See every field of the payments endpoints.
+  </Card>
+</Columns>

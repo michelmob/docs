@@ -1,0 +1,52 @@
+---
+title: "Payouts"
+description: "Send money to a beneficiary's Pix key and follow the payout until it is paid."
+keywords: ["payouts", "pix key", "beneficiary", "transfer"]
+---
+
+A payout sends money from your merchant account to a beneficiary. Payouts are processed in the background: you request one, then check it until it reaches a final status.
+
+## Request a payout
+
+```bash
+curl -X POST "https://api-sandbox.protospay.com/payouts" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "merchantId": "'"$MERCHANT_ID"'",
+    "amount": 80.00,
+    "currency": "BRL",
+    "paymentMethod": "pix",
+    "description": "Commission October",
+    "beneficiary": {
+      "name": "João Pereira",
+      "document": "98765432100",
+      "email": "joao.pereira@example.com"
+    },
+    "pixKey": "joao.pereira@example.com",
+    "pixKeyType": "email"
+  }'
+```
+
+`merchantId`, `currency`, `paymentMethod` and the beneficiary's `name` and `document` are required. The beneficiary's `email` is optional.
+
+For a Pix payout, send the beneficiary's Pix key in `pixKey` (up to 77 characters) and its type in `pixKeyType`.
+
+<Note>
+  Save the payout `id` from the response in your system. It is the only identifier you can use to get the payout later.
+</Note>
+
+## Follow the payout
+
+The API answers `202 Accepted` with the payout's `id`, initial `status`, `amount`, `currency`, `createdAt`, and `requestedByUserId` (who requested it). The payout is not paid yet at this point.
+
+Call [Get a payout](/api-reference/payouts/get-a-payout) with the `id` to check it:
+
+- `paidAt` is set when the money reaches the beneficiary.
+- `failureCode` and `failureReason` explain a failed payout.
+- `updatedAt` tells you when the status last changed.
+
+```bash
+curl "https://api-sandbox.protospay.com/payouts/$PAYOUT_ID" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```

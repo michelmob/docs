@@ -1,0 +1,45 @@
+---
+title: "Introduction"
+description: "Collect payments and send payouts with the ProtosPay Payments API."
+keywords:
+  - "protospay"
+  - "payments api"
+  - "pix"
+  - "payouts"
+  - "checkout"
+---
+
+The ProtosPay Payments API lets your server collect money from customers and send money to beneficiaries. You can:
+
+- **Create checkouts** for an order and see which payment methods the customer can use.
+- **Create payments** with a specific payment method, such as Pix, and show the customer the Pix QR code.
+- **Send payouts** to a beneficiary's Pix key and follow them until they are paid.
+
+## Environments
+
+| Environment | Base URL | Dashboard |
+| --- | --- | --- |
+| Sandbox | `https://api-sandbox.protospay.com` | [app-sand.protospay.com](https://app-sand.protospay.com) |
+| Production | `https://api.protospay.com` | [app.protospay.com](https://app.protospay.com) |
+
+Build and test against the sandbox first. Sandbox and production use separate API keys.
+
+## Get started
+
+<Columns cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get an access token and create your first Pix payment.
+  </Card>
+
+  <Card title="Authentication" icon="key-round" href="/authentication">
+    Create API keys and exchange them for OAuth access tokens.
+  </Card>
+
+  <Card title="Pix payments" icon="qr-code" href="/guides/pix-payments">
+    Choose between checkouts and payments, and display the Pix QR code.
+  </Card>
+
+  <Card title="Payouts" icon="send" href="/guides/payouts">
+    Send money to a Pix key and track the payout.
+  </Card>
+</Columns>

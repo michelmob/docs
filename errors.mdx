@@ -1,0 +1,21 @@
+---
+title: "Errors"
+description: "HTTP status codes returned by the ProtosPay Payments API and how to handle them."
+keywords: ["errors", "status codes", "400", "401", "404", "500"]
+---
+
+The API uses standard HTTP status codes. Codes in the `2xx` range mean the request succeeded, `4xx` codes mean something in the request must change, and `5xx` codes mean an error on the ProtosPay side.
+
+| Status | Meaning | What to do |
+| --- | --- | --- |
+| `200 OK` | The resource was returned. | |
+| `201 Created` | The checkout or payment was created. | |
+| `202 Accepted` | The payout was accepted and is processed in the background. | Follow it with [Get a payout](/api-reference/payouts/get-a-payout). |
+| `400 Bad Request` | The request body is invalid: a required field is missing, or a value is too long or has the wrong format. | Fix the request before retrying. Check field limits in the API reference. |
+| `401 Unauthorized` | The access token is missing, invalid or expired. | Request a new token. See [Authentication](/authentication). |
+| `404 Not Found` | No payment or payout with that ID exists for your account. | Check the ID, and that you use the same environment it was created in. |
+| `500 Internal Server Error` | An unexpected error occurred on the ProtosPay side. | Retry later. Before retrying a create request, get the resource first so you don't create it twice. |
+
+## Payment and payout failures
+
+A payment or payout can be created successfully and fail later. In that case the request still returns a `2xx` status, and the resource's `status` shows the failure. `failureCode` and `failureReason` explain why.
